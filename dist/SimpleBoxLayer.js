@@ -102,7 +102,7 @@ L.SimpleBoxLayer = L.FeatureGroup.extend({
     debug: false,
     minzoom: 15,
     endpoint: "http://overpass-api.de/api/",
-    query: "(node(BBOX)[organic];node(BBOX)[second_hand];);out qt;",
+    query: "interpreter?data=[out:json];(node($BBOX)[organic];node($BBOX)[second_hand];);out qt;",
     callback: function(data) {
       for(var i = 0; i < data.elements.length; i++) {
         var e = data.elements[i];
@@ -223,6 +223,7 @@ L.SimpleBoxLayer = L.FeatureGroup.extend({
       console.debug("load Pois");
     }
     //console.log(this._map.getBounds());
+    console.log(this._map.getZoom() >= this.options.minzoom) ;
     if (this._map.getZoom() >= this.options.minzoom) {
       //var bboxList = new Array(this._map.getBounds());
       var bboxList = this._view2BBoxes(
@@ -250,10 +251,10 @@ L.SimpleBoxLayer = L.FeatureGroup.extend({
           this._requested[x][y] = true;
 
 
-          var queryWithMapCoordinates = this.options.query.replace(/(BBOX)/g, bbox.toSimpleBoxBBoxString());
+          var queryWithMapCoordinates = this.options.query.replace(/\$BBOX/g, bbox.toSimpleBoxBBoxString());
           var url =  this.options.endpoint + queryWithMapCoordinates;
 
-	    console.log("simplebox:", endpoint);
+	  console.log("simplebox:", url);
           if (beforeRequest) {
               this.options.beforeRequest.call(this);
               beforeRequest = false;
@@ -295,7 +296,7 @@ L.SimpleBoxLayer = L.FeatureGroup.extend({
     }
 
     this.onMoveEnd();
-    if (this.options.query.indexOf("(BBOX)") != -1) {
+    if (this.options.query.indexOf("$BBOX") != -1) {
       map.on('moveend', this.onMoveEnd, this);
     }
     if (this.options.debug) {

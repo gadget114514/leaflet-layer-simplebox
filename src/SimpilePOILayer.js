@@ -8,8 +8,8 @@ L.SimplePOILayer = L.FeatureGroup.extend({
   options: {
     debug: false,
     minzoom: 15,
-    endpoint: "//overpass-api.de/api/",
-    query: "(node(BBOX)[organic];node(BBOX)[second_hand];);out qt;",
+    endpoint: "http://overpass-api.de/api/",
+    query: "interpreter?data=[out:json];(node($BBOX)[organic];node($BBOX)[second_hand];);out qt;",
     callback: function(data) {
       for(var i = 0; i < data.elements.length; i++) {
         var e = data.elements[i];
